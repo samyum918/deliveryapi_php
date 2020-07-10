@@ -24,12 +24,15 @@ class DeliveryController extends Controller
             return array("error" => "Origin or destination is not a valid coordination");
         }
         
+        //Distance Matrix API
+        //e.g. 22.3352484,114.2046599/22.3263164,114.2045314
         $distanceObj = $this->calculateDistance($origin, $destination);
         if($distanceObj->rows[0]->elements[0]->status != "OK") {
             return array("error" => "Distance Matrix API cannot calculate the path");
         }
         $distance = $distanceObj->rows[0]->elements[0]->distance->value;
 
+        //save new order
         $order = new Orders();
         $order->distance = $distance;
         $order->status = "UNASSIGNED";
@@ -51,6 +54,7 @@ class DeliveryController extends Controller
             return array("error" => "Order has been taken");
         }
 
+        //update order
         $order->status = "ASSIGNED";
         $order->save();
 
