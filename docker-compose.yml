@@ -1,0 +1,23 @@
+version: '3.0'
+services:
+  deliveryapi:
+    container_name: deliveryapi
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      MYSQL_HOST: db
+    working_dir: /deliveryapi
+    command: "./wait-for-it.sh db:3306 -- ./migrate_and_start.sh"
+  db:
+    container_name: db
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: delivery
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: 123456
